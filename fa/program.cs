@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace fans
 {
+    // Класс State представляет состояние в ДКА.
     public class State
     {
-        public string Name;
-        public Dictionary<char, State> Transitions;
-        public bool IsAcceptState;
+        public string Name; // Имя состояния
+        public Dictionary<char, State> Transitions; // Словарь переходов по символам
+        public bool IsAcceptState; // Флаг, указывающий, является ли состояние принимающим
     }
 
+    // Класс FA1 представляет ДКА, который принимает бинарную строку, содержащую ровно один '0' и хотя бы одну '1'.
     public class FA1
     {
         public State InitialState = new State()
@@ -73,6 +75,8 @@ namespace fans
         }
     }
 
+
+    // Класс FA2 представляет ДКА, который принимает бинарную строку, содержащую нечетное количество символов '0' и '1'.
     public class FA2
     {
         public State InitialState = new State()
@@ -136,6 +140,8 @@ namespace fans
         }
     }
 
+
+    // Класс FA3 представляет ДКА, который принимает бинарную строку, содержащую '11'.
     public class FA3
     {
         public State InitialState = new State()
@@ -188,6 +194,7 @@ namespace fans
             return current.IsAcceptState;
         }
     }
+
 
     class Program
     {
