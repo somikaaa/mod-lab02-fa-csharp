@@ -1,220 +1,251 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace fans
 {
-    // Класс State представляет состояние в ДКА.
     public class State
     {
-        public string Name; // Имя состояния
-        public Dictionary<char, State> Transitions; // Словарь переходов по символам
-        public bool IsAcceptState; // Флаг, указывающий, является ли состояние принимающим
+        public string Name;
+        public Dictionary<char, State> Transitions;
+        public bool IsAcceptState;
     }
 
-    // Класс FA1 представляет ДКА, который принимает бинарную строку, содержащую ровно один '0' и хотя бы одну '1'.
+
     public class FA1
     {
-        public State InitialState = new State()
+        public static State a = new State()
         {
-            Name = "Initial",
+            Name = "a",
             IsAcceptState = false,
             Transitions = new Dictionary<char, State>()
         };
-
-        public State StateZero = new State()
+        public State b = new State()
         {
-            Name = "StateZero",
-            IsAcceptState = false,
-            Transitions = new Dictionary<char, State>()
-        };
-
-        public State StateOne = new State()
-        {
-            Name = "StateOne",
-            IsAcceptState = false,
-            Transitions = new Dictionary<char, State>()
-        };
-
-        public State AcceptState = new State()
-        {
-            Name = "Accept",
+            Name = "b",
             IsAcceptState = true,
             Transitions = new Dictionary<char, State>()
         };
+        public State c = new State()
+        {
+            Name = "c",
+            IsAcceptState = false,
+            Transitions = new Dictionary<char, State>()
+        };
+        public State d = new State()
+        {
+            Name = "d",
+            IsAcceptState = true,
+            Transitions = new Dictionary<char, State>()
+        };
+        public State e = new State()
+        {
+            Name = "e",
+            IsAcceptState = false,
+            Transitions = new Dictionary<char, State>()
+        };
+
+        State InitialState = a;
 
         public FA1()
         {
-            InitialState.Transitions['0'] = StateZero;
-            InitialState.Transitions['1'] = StateOne;
-
-            StateZero.Transitions['0'] = StateZero;
-            StateZero.Transitions['1'] = AcceptState;
-
-            StateOne.Transitions['0'] = AcceptState;
-            StateOne.Transitions['1'] = StateOne;
-
-            AcceptState.Transitions['0'] = AcceptState;
-            AcceptState.Transitions['1'] = AcceptState;
+            a.Transitions['0'] = c;
+            a.Transitions['1'] = b;
+            b.Transitions['0'] = d;
+            b.Transitions['1'] = b;
+            c.Transitions['0'] = e;
+            c.Transitions['1'] = d;
+            d.Transitions['0'] = e;
+            d.Transitions['1'] = d;
+            e.Transitions['0'] = e;
+            e.Transitions['1'] = e;
         }
 
         public bool? Run(IEnumerable<char> s)
         {
             State current = InitialState;
-            foreach (var c in s)
+            foreach (var c in s) // цикл по всем символам 
             {
-                if (current.Transitions.TryGetValue(c, out State nextState))
-                {
-                    current = nextState;
-                }
-                else
-                {
+                current = current.Transitions[c];
+                // меняем состояние на то, в которое у нас переход
+                if (current == null)
+                    // если его нет, возвращаем признак ошибки
                     return null;
-                }
+                // иначе переходим к следующему
             }
             return current.IsAcceptState;
+            // результат true если в конце финальное состояние
         }
     }
 
-
-    // Класс FA2 представляет ДКА, который принимает бинарную строку, содержащую нечетное количество символов '0' и '1'.
     public class FA2
     {
-        public State InitialState = new State()
+        public static State a = new State()
         {
-            Name = "Initial",
+            Name = "a",
             IsAcceptState = false,
             Transitions = new Dictionary<char, State>()
         };
-
-        public State StateZero = new State()
+        public State b = new State()
         {
-            Name = "StateZero",
+            Name = "b",
             IsAcceptState = false,
             Transitions = new Dictionary<char, State>()
         };
-
-        public State StateOne = new State()
+        public State c = new State()
         {
-            Name = "StateOne",
-            IsAcceptState = false,
-            Transitions = new Dictionary<char, State>()
-        };
-
-        public State AcceptState = new State()
-        {
-            Name = "Accept",
+            Name = "c",
             IsAcceptState = true,
             Transitions = new Dictionary<char, State>()
         };
+        public State d = new State()
+        {
+            Name = "d",
+            IsAcceptState = false,
+            Transitions = new Dictionary<char, State>()
+        };
+        public State e = new State()
+        {
+            Name = "e",
+            IsAcceptState = true,
+            Transitions = new Dictionary<char, State>()
+        };
+
+        State InitialState = a;
 
         public FA2()
         {
-            InitialState.Transitions['0'] = StateZero;
-            InitialState.Transitions['1'] = StateOne;
-
-            StateZero.Transitions['0'] = StateOne;
-            StateZero.Transitions['1'] = AcceptState;
-
-            StateOne.Transitions['0'] = AcceptState;
-            StateOne.Transitions['1'] = StateZero;
-
-            AcceptState.Transitions['0'] = AcceptState;
-            AcceptState.Transitions['1'] = AcceptState;
+            a.Transitions['0'] = b;
+            a.Transitions['1'] = c;
+            b.Transitions['0'] = a;
+            b.Transitions['1'] = e;
+            c.Transitions['0'] = e;
+            c.Transitions['1'] = d;
+            d.Transitions['0'] = a;
+            d.Transitions['1'] = c;
+            e.Transitions['0'] = c;
+            e.Transitions['1'] = b;
         }
 
         public bool? Run(IEnumerable<char> s)
         {
             State current = InitialState;
-            foreach (var c in s)
+            foreach (var c in s) // цикл по всем символам 
             {
-                if (current.Transitions.TryGetValue(c, out State nextState))
-                {
-                    current = nextState;
-                }
-                else
-                {
+                current = current.Transitions[c];
+                // меняем состояние на то, в которое у нас переход
+                if (current == null)
+                    // если его нет, возвращаем признак ошибки
                     return null;
-                }
+                // иначе переходим к следующему
             }
             return current.IsAcceptState;
+            // результат true если в конце финальное состояние
         }
     }
 
-
-    // Класс FA3 представляет ДКА, который принимает бинарную строку, содержащую '11'.
     public class FA3
     {
-        public State InitialState = new State()
+        public static State a = new State()
         {
-            Name = "Initial",
+            Name = "a",
             IsAcceptState = false,
             Transitions = new Dictionary<char, State>()
         };
-
-        public State StateOne = new State()
+        public State b = new State()
         {
-            Name = "StateOne",
+            Name = "b",
             IsAcceptState = false,
             Transitions = new Dictionary<char, State>()
         };
-
-        public State AcceptState = new State()
+        public State c = new State()
         {
-            Name = "Accept",
+            Name = "c",
             IsAcceptState = true,
             Transitions = new Dictionary<char, State>()
         };
 
+        State InitialState = a;
+
         public FA3()
         {
-            InitialState.Transitions['0'] = InitialState;
-            InitialState.Transitions['1'] = StateOne;
-
-            StateOne.Transitions['0'] = InitialState;
-            StateOne.Transitions['1'] = AcceptState;
-
-            AcceptState.Transitions['0'] = AcceptState;
-            AcceptState.Transitions['1'] = AcceptState;
+            a.Transitions['0'] = a;
+            a.Transitions['1'] = b;
+            b.Transitions['0'] = a;
+            b.Transitions['1'] = c;
+            c.Transitions['0'] = c;
+            c.Transitions['1'] = c;
         }
 
         public bool? Run(IEnumerable<char> s)
         {
             State current = InitialState;
-            foreach (var c in s)
+            foreach (var c in s) // цикл по всем символам 
             {
-                if (current.Transitions.TryGetValue(c, out State nextState))
-                {
-                    current = nextState;
-                }
-                else
-                {
+                current = current.Transitions[c]; 
+                // меняем состояние на то, в которое у нас переход
+                if (current == null)              
+                    // если его нет, возвращаем признак ошибки
                     return null;
-                }
+                // иначе переходим к следующему
             }
             return current.IsAcceptState;
+            // результат true если в конце финальное состояние
         }
     }
-
-
     class Program
     {
         static void Main(string[] args)
         {
-            string s1 = "0000010111"; // Пример строки для FA1
-            string s2 = "010101"; // Пример строки для FA2
-            string s3 = "11"; // Пример строки для FA3
+            string s1 = "0111";
+            string s2 = "01011";
+            string s3 = "110101011";
+            string s4 = "1110111";
+            string s5 = "10";
+
+            string s6 = "0101";
+            string s7 = "00110011";
+            string s8 = "0001";
+            string s9 = "111000";
+
+            string s10 = "00110011";
+            string s11 = "0101";
 
             FA1 fa1 = new FA1();
             FA2 fa2 = new FA2();
             FA3 fa3 = new FA3();
 
             bool? result1 = fa1.Run(s1);
-            bool? result2 = fa2.Run(s2);
-            bool? result3 = fa3.Run(s3);
+            bool? result2 = fa1.Run(s2);
+            bool? result3 = fa1.Run(s3);
+            bool? result4 = fa1.Run(s4);
+            bool? result5 = fa1.Run(s5);
+
+            bool? result6 = fa2.Run(s6);
+            bool? result7 = fa2.Run(s7);
+            bool? result8 = fa2.Run(s8);
+            bool? result9 = fa2.Run(s9);
+
+            bool? result10 = fa3.Run(s10);
+            bool? result11 = fa3.Run(s11);
 
             Console.WriteLine($"FA1: {result1}");
-            Console.WriteLine($"FA2: {result2}");
-            Console.WriteLine($"FA3: {result3}");
+            Console.WriteLine($"FA1: {result2}");
+            Console.WriteLine($"FA1: {result3}");
+            Console.WriteLine($"FA1: {result4}");
+            Console.WriteLine($"FA1: {result5}");
+
+            Console.WriteLine($"FA2: {result6}");
+            Console.WriteLine($"FA2: {result7}");
+            Console.WriteLine($"FA2: {result8}");
+            Console.WriteLine($"FA2: {result9}");
+
+            Console.WriteLine($"FA3: {result10}");
+            Console.WriteLine($"FA3: {result11}");
+
         }
     }
 }
+
